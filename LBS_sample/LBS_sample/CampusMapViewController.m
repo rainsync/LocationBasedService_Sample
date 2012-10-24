@@ -18,6 +18,7 @@
 
 @implementation CampusMapViewController
 @synthesize campusMapView;
+@synthesize poiTypeSegControl;
 
 - (AppDelegate *)appDelegate
 {
@@ -46,7 +47,31 @@
     campusMapView.region = initialRegion;
     
     [campusMapView addAnnotations:[self appDelegate].allPOIs];
+    self.poiTypeSegControl.selectedSegmentIndex = 0;
+    [self.poiTypeSegControl sendActionsForControlEvents:UIControlEventValueChanged];
 }
+
+- (void)viewDidLoad
+{
+    [super viewDidLoad];
+    // Do any additional setup after loading the view from its nib.
+    
+    self.navigationItem.titleView = self.poiTypeSegControl;
+    self.navigationController.navigationBar.barStyle = UIBarStyleBlackTranslucent;
+}
+
+- (void)didReceiveMemoryWarning
+{
+    [super didReceiveMemoryWarning];
+    // Dispose of any resources that can be recreated.
+}
+
+- (void)viewDidUnload {
+    [self setCampusMapView:nil];
+    poiTypeSegControl = nil;
+    [super viewDidUnload];
+}
+
 
 #pragma mark -
 #pragma mark MapView delegate
@@ -111,20 +136,21 @@
     
 }
 
-- (void)viewDidLoad
-{
-    [super viewDidLoad];
-    // Do any additional setup after loading the view from its nib.
-}
-
-- (void)didReceiveMemoryWarning
-{
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
-}
-
-- (void)viewDidUnload {
-    [self setCampusMapView:nil];
-    [super viewDidUnload];
+- (IBAction)poiUpdate:(id)sender {
+    [campusMapView removeAnnotations:campusMapView.annotations];
+    int poiType = self.poiTypeSegControl.selectedSegmentIndex;
+    NSArray *selectedPOIs;
+    switch (poiType) {
+        case 0:
+            selectedPOIs = [self appDelegate].libraryPOIs;
+            break;
+        case 1:
+            selectedPOIs = [self appDelegate].restaurantPOIs;
+            break;
+        case 2:
+            selectedPOIs = [self appDelegate].printerPOIs;
+            break;
+    }
+    [campusMapView addAnnotations:selectedPOIs];
 }
 @end

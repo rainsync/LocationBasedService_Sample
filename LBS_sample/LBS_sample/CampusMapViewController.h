@@ -12,7 +12,9 @@
 @interface CampusMapViewController : UIViewController
 {
     MKMapView *campusMapView;
+    UISegmentedControl *poiTypeSegControl;
 }
+- (IBAction)poiUpdate:(id)sender;
 @property (strong, nonatomic) IBOutlet MKMapView *campusMapView;
-
+@property (strong, nonatomic) IBOutlet UISegmentedControl *poiTypeSegControl;
 @end
