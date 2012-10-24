@@ -8,6 +8,16 @@
 
 #import <UIKit/UIKit.h>
 
-@interface CampusPOIViewController : UIViewController
+@interface CampusPOIViewController : UITableViewController {
+    int _titleRow[3];
+}
+
+@property BOOL libraryExpanded;
+@property BOOL restaurantExpanded;
+@property BOOL printerExpanded;
+
+@property (readonly) int numOfLibrary;
+@property (readonly) int numOfRestaurant;
+@property (readonly) int numOfPrinter;
 
 @end
