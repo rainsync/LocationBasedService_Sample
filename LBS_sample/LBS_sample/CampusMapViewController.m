@@ -62,7 +62,53 @@
         LocationAnnotationIdentifier = @"LibraryAnnotation";
     } else if ([annotation isKindOfClass:[LSRestaurant class]]) {
         LocationAnnotationIdentifier = @"RestaurantAnnotation";
+    } else if ([annotation isKindOfClass:[LSPrinter class]]) {
+        LocationAnnotationIdentifier = @"PrinterAnnotation";
+    } else {
+        return nil;
     }
+    
+    MKAnnotationView *annotationView = [campusMapView dequeueReusableAnnotationViewWithIdentifier:LocationAnnotationIdentifier];
+    if (!annotationView) {
+        MKAnnotationView *customAnnotationView = [[MKAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:LocationAnnotationIdentifier];
+        customAnnotationView.centerOffset = CGPointMake(0, -10);
+        customAnnotationView.canShowCallout = YES;
+        customAnnotationView.image = [(LSLocation *)annotation annotationImage];
+        
+        UIButton *rightDetailButton = [UIButton buttonWithType:UIButtonTypeDetailDisclosure];
+        customAnnotationView.rightCalloutAccessoryView = rightDetailButton;
+        return customAnnotationView;
+    } else {
+        annotationView.annotation = annotation;
+    }
+    return annotationView;
+}
+
+//하늘에서 핀이 떨어지는 애니메이션 구현
+- (void)mapView:(MKMapView *)mapView didAddAnnotationViews:(NSArray *)views
+{
+    MKAnnotationView *annotationView;
+    float animationDelay = 0.0;
+    for (annotationView in views) {
+        CGRect endFrame = annotationView.frame;
+        
+        annotationView.frame = CGRectMake(annotationView.frame.origin.x,
+                                          annotationView.frame.origin.y - 400.0,
+                                          annotationView.frame.size.width,
+                                          annotationView.frame.size.height);
+        [UIView beginAnimations:nil context:NULL];
+        [UIView setAnimationDuration:0.3];
+        [UIView setAnimationDelay:animationDelay];
+        [UIView setAnimationCurve:UIViewAnimationCurveEaseIn];
+        [annotationView setFrame:endFrame];
+        [UIView commitAnimations];
+        animationDelay = animationDelay + 0.02;
+    }
+}
+
+- (void)mapView:(MKMapView *)mapView annotationView:(MKAnnotationView *)view calloutAccessoryControlTapped:(UIControl *)control
+{
+    
 }
 
 - (void)viewDidLoad
